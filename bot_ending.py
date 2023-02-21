@@ -170,6 +170,8 @@ If you write command 'days/birthday' please write 'days name'
 If you write command 'find/search' please write 'find name'"""
         except KeyError:
             return "..."
+        except ValueError:
+            return "phone not correct "
     return wrapper
 
 
