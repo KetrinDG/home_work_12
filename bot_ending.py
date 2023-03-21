@@ -27,9 +27,9 @@ class Name(Field):
     @Field.value.setter
     def value(self, name):
         if not isinstance(name, str):
-            raise TypeError('Name must be a string')
-        if not re.match(r'^[a-zA-Z]{1,20}$', name):
-            raise ValueError('Name must contain only letters and be 1-20 symbols long')
+            raise TypeError("Name must be a string")
+        if not re.match(r"^[a-zA-Z]{1,20}$", name):
+            raise ValueError("Name must contain only letters and be 1-20 symbols long")
         self._value = name
 
 
@@ -50,7 +50,7 @@ class Birthday(Field):
                 birthday = datetime.strptime(value, "%Y/%m/%d").date()
                 self._value = birthday
             except TypeError or ValueError:
-                raise ValueError('Birthday must be year/month/date')
+                raise ValueError("Birthday must be year/month/date")
         else:
             self._value = ""
 
@@ -82,7 +82,6 @@ class Record:
             if p.value == phone.value:
                 self.phones.remove(p)
 
-
     def __str__(self) -> str:
         return f"Contact {self.name}: Phones {self.phones}"
 
@@ -92,9 +91,7 @@ class Record:
 
     def days_to_birthday(self):
         delta1 = datetime(
-            datetime.now().year,
-            self.birthday._value.month,
-            self.birthday._value.day
+            datetime.now().year, self.birthday._value.month, self.birthday._value.day
         )
         delta2 = datetime(
             datetime.now().year + 1,
@@ -136,9 +133,8 @@ class AddressBook(UserDict):
         result = []
         for k, v in self.data.items():
             v = str(v)
-            [result.append(f'{k.title()} {v}') for i in value if i in v]
+            [result.append(f"{k.title()} {v}") for i in value if i in v]
         return result
-
 
     def show_all(self) -> str:
         return "\n".join([str(v) for v in self.items()])
@@ -172,6 +168,7 @@ If you write command 'find/search' please write 'find name'"""
             return "..."
         except ValueError:
             return "phone not correct "
+
     return wrapper
 
 
@@ -183,10 +180,10 @@ def help_command():
         'add - add contact, use "add" "name" "number" "birthday"',
         'change - change your contact, use "change" "name" "number"',
         'phone - use "phone" "name" that see number this contact',
-        'show all - show all your contacts',
-        'birthday name - show birthday',
-        'find - find contact',
-        'del - delete contacts'
+        "show all - show all your contacts",
+        "birthday name - show birthday",
+        "find - find contact",
+        "del - delete contacts",
     ]
     return "\n".join(help_list)
 
@@ -243,18 +240,21 @@ def del_number(*args):
     contacts[name.value].del_phone(phone.value)
     return f"Contact {name.value} has deleted successfully."
 
+
 @input_error
 def print_phone(*args):
     contacts = AddressBook.read_file()
     return contacts[args[0]]
+
 
 @input_error
 def del_contact(*args):
     contacts = AddressBook.read_file()
     rec = contacts.del_record(args[0])
     if rec:
-        return f'Contact {rec.name.value} has deleted successfully.'
-    return f'Contact, with name {args[0]} not in notebook.'
+        return f"Contact {rec.name.value} has deleted successfully."
+    return f"Contact, with name {args[0]} not in notebook."
+
 
 @input_error
 def add_phone_command(*args):
@@ -278,22 +278,25 @@ def birthday_contact(*args, **kwargs):
             return f"{name.capitalize()}'s birthday is {contacts_dict[name].birthday}. {result_bd}"
     return "No personal record available"
 
+
 @input_error
 def days_to_births(*args):
     contacts = AddressBook.read_file()
     rec = contacts.get(args[0])
     if rec:
-        return f'{rec.name.value.title()} has {rec.days_to_birthday()} days to birthday.'
-    return f'Contact, with name {args[0]} not in notebook.'
+        return (
+            f"{rec.name.value.title()} has {rec.days_to_birthday()} days to birthday."
+        )
+    return f"Contact, with name {args[0]} not in notebook."
 
 
 @input_error
 def find(*args):
     contacts = AddressBook.read_file()
-    result_str = ''
+    result_str = ""
     for i in contacts.to_find(args):
-        result_str += f'{i}\n'
-    return result_str[:-1] if result_str else 'Nothing found'
+        result_str += f"{i}\n"
+    return result_str[:-1] if result_str else "Nothing found"
 
 
 # отобразить все
@@ -321,7 +324,9 @@ commands = {
     help_command: ["help"],
     del_number: ["del", "delete", "-"],
     birthday_contact: ["birthday", "bdate", "bd"],
-    del_contact: ["remove", ],
+    del_contact: [
+        "remove",
+    ],
     days_to_births: ["days", "birthday"],
     find: ["find", "search"],
 }
